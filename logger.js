@@ -30,11 +30,12 @@ Logger.prototype = {
                 '['+(new Date().toUTCString())+'] '+((typeof priority === 'undefined')?'':(priority==0?'[INFO]':(priority==1?'[WARNING]':(priority==2?'[ERROR]':'[??]'))))+((typeof code === 'undefined')?'':' Code '+code+': ')+message
             );
     },
-    timeFct: function(fct,context,fctName){ // Timing a function call
+    timeFct: function(fct,context,fctName){ // Timing a synchronous function call
         var time = process.hrtime();
-        fct.apply(context,Array.prototype.slice.call(arguments, 3));
+        var result = fct.apply(context,Array.prototype.slice.call(arguments, 3));
         var diff = process.hrtime(time);
         this.write('Call of '+fctName+' in '+((diff[0] * 1e9 + diff[1])/1000)+'μs');
+        return result;
     },
     close: function(){ // Closing the file Logger
         if(typeof this.stream !== 'undefined') this.stream.close(); 
